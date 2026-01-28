@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Simulação de Consórcio</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f2f2f2;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            background: #ffffff;
+            max-width: 420px;
+            margin: 40px auto;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+        input, button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 10px;
+            font-size: 16px;
+        }
+        button {
+            background: #0a7cff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #055ec4;
+        }
+        label {
+            font-size: 14px;
+            display: block;
+            margin-top: 10px;
+        }
+        small {
+            display: block;
+            margin-top: 10px;
+            font-size: 12px;
+            color: #555;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Simule seu Consórcio</h2>
+
+    <form id="leadForm">
+        <input type="text" id="nome" placeholder="Seu nome completo" required>
+
+        <input type="tel" id="telefone" placeholder="DDD + Telefone (Ex: 11912345678)" required>
+
+        <label>
+            <input type="checkbox" id="lgpd" required>
+            Autorizo o contato para fins comerciais sobre consórcio, conforme a LGPD.
+        </label>
+
+        <button type="submit">Quero Receber Contato</button>
+    </form>
+
+    <small>
+        Seus dados serão utilizados apenas para contato sobre consórcio.
+    </small>
+</div>
+
+<script>
+document.getElementById("leadForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    const nome = document.getElementById("nome").value.trim();
+    let telefone = document.getElementById("telefone").value;
+    const lgpd = document.getElementById("lgpd").checked;
+
+    telefone = telefone.replace(/\D/g, '');
+
+    if (nome.length < 3) {
+        alert("Digite seu nome completo.");
+        return;
+    }
+
+    if (telefone.length !== 11) {
+        alert("Digite um telefone válido com DDD.");
+        return;
+    }
+
+    if (!lgpd) {
+        alert("Você precisa autorizar o contato.");
+        return;
+    }
+
+    const dados = {
+        nome: nome,
+        telefone: telefone,
+        origem: "Landing Page Consórcio",
+        data: new Date().toLocaleString()
+    };
+
+    fetch("https://formspree.io/f/xvzropkq", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(dados)
+    })
+    .then(() => {
+        alert("Recebemos seus dados! Em breve entraremos em contato.");
+        document.getElementById("leadForm").reset();
+    })
+    .catch(() => {
+        alert("Erro ao enviar. Tente novamente.");
+    });
+});
+</script>
+
+</body>
+</html>
